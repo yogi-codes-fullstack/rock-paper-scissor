@@ -1,48 +1,62 @@
 "use strict"
 
-function getComputerChoice () {
-    const choices = ['rock', 'paper', 'scissor'];
-    let randIndex = Math.floor(Math.random()*3);
-    return choices[randIndex];
-}
-
-function getHumanChoice() {
-    let humanChoice = prompt("Enter your choice(rock/paper/scissor): ");
-    return humanChoice;
-}
-
+const CHOICES = ['ROCK', 'PAPER', 'SCISSOR'];
 let humanScore = 0;
 let computerScore = 0;
+let playerChoiceInd = 0;
+let computerChoiceInd = 0;
 
-function playRound(humanChoice, computerChoice) {
-    humanChoice = humanChoice.toLowerCase();
+const computerChoiceLabel = document.querySelector("#computer-choice");
+const playerChoiceLabel = document.querySelector("#player-choice");
+const computerScoreLabel = document.querySelector("#computer-score");
+const playerScoreLabel = document.querySelector("#player-score");
 
-    console.log(`Computer Choice: ${computerChoice}, Human Choice: ${humanChoice}`);
+const btnCompChoice = document.querySelector("#btn-computerChoice");
+const btnRock = document.querySelector("#btn-rock");
+const btnPaper = document.querySelector("#btn-paper");
+const btnScissor = document.querySelector("#btn-scissor");
+
+const divPlayerButtons = document.querySelector("#player-buttons");
+
+
+playerChoiceLabel.textContent = CHOICES[0]; // default player's choice is always "ROCK"
+
+btnCompChoice.addEventListener("click", () => {
+    computerChoiceInd = Math.floor(Math.random()*3);
+    computerChoiceLabel.textContent = CHOICES[computerChoiceInd];
+    playRound(playerChoiceInd, computerChoiceInd);
+})
+
+// example of event delegation
+divPlayerButtons.addEventListener("click", (e) => {
+    // console.log(e.target.id);
+    switch(e.target.id){
+        case "btn-rock":
+            playerChoiceInd = 0;
+            break;
+        case "btn-paper": 
+            playerChoiceInd = 1;
+            break;
+        case "btn-scissor":
+            playerChoiceInd = 2;
+            break;        
+    }
+    playerChoiceLabel.textContent = CHOICES[playerChoiceInd];
+})
+
+
+
+function playRound(playerChoiceInd, computerChoiceInd) {
     
-    if ((humanChoice == 'rock' && computerChoice == 'paper') || (humanChoice == 'paper' && computerChoice == 'scissor') || (humanChoice == 'scissor' && computerChoice == 'rock')){
+    if ((playerChoiceInd == 0 && computerChoiceInd == 1) || (playerChoiceInd == 1 && computerChoiceInd == 2) || (playerChoiceInd == 2 && computerChoiceInd == 0)){
         console.log('COMPUTER won this ROUND!!');
         computerScore++;        
-    } else if ( humanChoice == computerChoice) {
+    } else if ( playerChoiceInd == computerChoiceInd) {
         console.log("ROUND TIED!!");
     } else {
         console.log("YOU won this ROUND!!");
         humanScore++;
     }
-
-    console.log(`SCORE \nComputer: ${computerScore}         Human: ${humanScore}`);
+    playerScoreLabel.textContent = humanScore;
+    computerScoreLabel.textContent = computerScore;
 }
-
-function playGame(){
-    for(let i=0; i<5; i++){
-        playRound(getHumanChoice(), getComputerChoice());
-    }
-
-    if (humanScore >= computerScore){
-        console.log("YOU WIN THE GAME. CONGRATULATIONS !!!");
-    }
-    else {
-        console.log("ALAS! You LOST the GAME!!!");
-    }
-}
-
-playGame();
